@@ -1,0 +1,32 @@
+{
+  "name": "website-title-scraper",
+  "version": "1.0.0",
+  "description": "This Application Scrap The Title From Website.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamnaveenoff/"
+  },
+  "keywords": [
+    "website-title-scrapping"
+  ],
+  "author": "Naveen Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "exceljs": "^4.3.0",
+    "express": "^4.17.2",
+    "get-title-at-url": "^1.1.8",
+    "got": "^10.4.0",
+    "jquery": "^3.6.0",
+    "jsdom": "^16.2.2",
+    "node-fetch": "^3.2.0",
+    "nodemon": "^2.0.15",
+    "read-excel-file": "^5.2.26",
+    "to": "^0.2.9",
+    "update": "^0.7.4",
+    "xlsx": "^0.17.5"
+  }
+}
