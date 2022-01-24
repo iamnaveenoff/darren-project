@@ -38,7 +38,7 @@ finalData.forEach(function (table) {
 
 console.log(UrlArray);
 
-// finalJsonData = JSON.stringify(UrlArray);
+finalJsonData = JSON.stringify(UrlArray);
 const ws = xlsx.utils.json_to_sheet(UrlArray);
 const wb = xlsx.utils.book_new();
 xlsx.utils.book_append_sheet(wb, ws, "Responses");

@@ -1,27 +1,58 @@
-// var XLSX = require("xlsx");
-// var request = require("request");
-// var cheerio = require("cheerio");
-
-// var workbook = XLSX.readFile("test.xlsx");
-// var sheet_name_list = workbook.SheetNames;
-// var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
-// var jsonData = JSON.stringify(xlData);
-// finalData = JSON.parse(jsonData);
-
-// console.log(finalData);
-
 var request = require("request");
-function handler(req, res) {
-  request("http://www.bar-n-ranch.com", function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      console.log("URL is OK"); // Print the google web page.
-      res.writeHead(200, { "Content-Type": "text/html" });
-      res.end("URL is OK");
+var cheerio = require("cheerio");
+const xlsx = require("xlsx");
+
+jsonData = [{ Domain: "blogger.com" }, { Domain: "stackoverflow.com" }];
+var UrlArray = [];
+function fetchTitle(url, onComplete = null) {
+  request(url, function (error, response, body) {
+    var output = url; // default to URL
+
+    if (!error && (response && response.statusCode) === 200) {
+      var $ = cheerio.load(body);
+      console.log(`URL = ${url}`);
+
+      var title = $("head > title").text().trim();
+      console.log(`Title = ${title}`);
+      output = `[${title}] (${url})`;
+      var keywords = ["Developers", "beautiful"];
+
+      var results = [];
+      for (let i = 0; i < keywords.length; i++) {
+        if (title.includes(keywords[i])) {
+          results.push(keywords[i]);
+        }
+      }
+      // console.log(match);
+
+      if (results.length > 0) {
+        UrlArray.push({
+          Domain: url,
+          Keywords: "" + results + "",
+          Title: title,
+          Output: output,
+        });
+        console.log(UrlArray);
+        // finalJsonData = JSON.stringify(UrlArray);
+        const ws = xlsx.utils.json_to_sheet(UrlArray);
+        const wb = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(wb, ws, "Responses");
+        xlsx.writeFile(wb, "output.xlsx");
+      }
     } else {
-      res.writeHead(500, { "Content-Type": "text/html" });
-      res.end("URL broke:" + JSON.stringify(response, null, 2));
+      console.log(
+        `Error = ${error}, code = ${response && response.statusCode}`
+      );
     }
+
+    console.log(`output = ${output} \n\n`);
+
+    if (onComplete) onComplete(output);
   });
 }
 
-require("http").createServer(handler).listen(4000);
+jsonData.forEach(function (table) {
+  var tableName = table.Domain;
+  var URL = "http://" + tableName;
+  fetchTitle(URL);
+});
